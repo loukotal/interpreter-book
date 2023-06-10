@@ -2,6 +2,7 @@ import * as readline from "readline";
 import { Lexer } from "./lexer";
 import { TokenType } from "./token";
 import { Parser } from "./parser";
+import { evaluate } from "./evaluator";
 
 export async function startRepl() {
   const rl = readline.createInterface({
@@ -23,7 +24,10 @@ export async function startRepl() {
       continue;
     }
 
-    console.log(program.toString());
+    const evaluated = evaluate(program);
+    if (evaluated) {
+      console.log(`> ${evaluated.inspect()}`);
+    }
   }
 }
 

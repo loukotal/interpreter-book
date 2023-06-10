@@ -1,6 +1,6 @@
 import { Token, TokenType } from "./token";
 
-interface AstNode {
+export interface AstNode {
   tokenLiteral: () => string;
   toString: () => string;
 }
