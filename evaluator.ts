@@ -11,6 +11,7 @@ import {
   MonkeyInteger,
   MonkeyNull,
   MonkeyObject,
+  MonkeyValue,
 } from "./object";
 
 const TRUE = new MonkeyBoolean(true);
@@ -63,6 +64,8 @@ function evaluatePrefixExpression(
   switch (opetarator) {
     case "!":
       return evaluateBangOperatorExpression(right);
+    case "-":
+      return evaluateMinusPrefixOperatorExpression(right);
     default:
       return NULL;
   }
@@ -79,4 +82,12 @@ function evaluateBangOperatorExpression(obj: MonkeyObject): MonkeyObject {
     default:
       return FALSE;
   }
+}
+
+function evaluateMinusPrefixOperatorExpression(obj: MonkeyObject) {
+  if (!(obj instanceof MonkeyInteger)) {
+    return NULL;
+  }
+  const value = obj.value;
+  return new MonkeyInteger(-value);
 }

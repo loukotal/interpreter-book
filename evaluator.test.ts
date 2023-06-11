@@ -15,6 +15,14 @@ describe.only("Evaluator", function () {
         input: "10",
         expected: 10,
       },
+      {
+        input: "-5",
+        expected: -5,
+      },
+      {
+        input: "-10",
+        expected: -10,
+      },
     ];
     for (const test of tests) {
       const evaluated = testEval(test.input);
@@ -51,6 +59,19 @@ describe.only("Evaluator", function () {
       testBooleanObject(evaluated, test.expected);
     }
   });
+  // test('evaluate "-" prefix operator', () => {
+  //   const tests = [
+  //     { input: "-5", expected: -5 },
+  //     { input: "-10", expected: -10 },
+  //     { input: "-true", expected: null },
+  //     { input: "-false", expected: null },
+  //     { input: "-null", expected: null },
+  //   ];
+  //   for (const test of tests) {
+  //     const evaluated = testEval(test.input);
+  //     testIntegerObject(evaluated, test.expected);
+  //   }
+  // });
 });
 
 function testEval(input: string): any {
@@ -60,7 +81,7 @@ function testEval(input: string): any {
   return evaluate(program);
 }
 
-function testIntegerObject(obj: MonkeyObject | null, expected: number) {
+function testIntegerObject(obj: MonkeyObject | null, expected: number | null) {
   expect(obj).toBeDefined();
   assertNotNullish(obj);
   assertIsMonkeyInteger(obj);
