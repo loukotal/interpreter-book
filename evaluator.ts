@@ -39,10 +39,19 @@ export function evaluate(node: AstNode): MonkeyObject | null {
     return evaluate(node.expression);
   } else if (node instanceof PrefixExpression) {
     const right = evaluate(node.right);
+    if (isError(right)) {
+      return right;
+    }
     return evaluatePrefixExpression(node.operator, right);
   } else if (node instanceof InfixExpression) {
     const left = evaluate(node.left);
+    if (isError(left)) {
+      return left;
+    }
     const right = evaluate(node.right);
+    if (isError(right)) {
+      return right;
+    }
     return evaluateIntegerInfixExpression(node.operator, left, right);
   } else if (node instanceof BlockStatement) {
     return evaluateBlockStatement(node);
@@ -51,6 +60,9 @@ export function evaluate(node: AstNode): MonkeyObject | null {
   } else if (node instanceof ReturnStatement) {
     if (node.returnValue) {
       const value = evaluate(node.returnValue);
+      if (isError(value)) {
+        return value;
+      }
       if (value) {
         return new MonkeyReturnValue(value);
       }
@@ -68,6 +80,9 @@ function evaluateIfExpression(ie: IfExpression | null) {
     return null;
   }
   const condition = evaluate(ie?.condition);
+  if (isError(condition)) {
+    return condition;
+  }
   if (isTruthy(condition)) {
     return evaluate(ie.consequence);
   } else if (ie.alternative) {
@@ -88,6 +103,13 @@ function isTruthy(obj: MonkeyObject | null) {
     default:
       return true;
   }
+}
+
+function isError(m: MonkeyObject | null) {
+  if (m) {
+    return m.getType() === MonkeyValue.ErrorObj;
+  }
+  return false;
 }
 
 function nativeBooleanToMonkeyBoolean(input: boolean) {
