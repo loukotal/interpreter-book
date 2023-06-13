@@ -7,6 +7,8 @@ export enum MonkeyValue {
   IntegerObj = "INTEGER",
   BooleanObj = "BOOLEAN",
   NullObj = "NULL",
+  ReturnValueObj = "RETURN_VALUE",
+  ErrorObj = "ERROR",
 }
 
 export class MonkeyInteger implements MonkeyObject {
@@ -46,5 +48,35 @@ export class MonkeyNull implements MonkeyObject {
 
   inspect() {
     return "null";
+  }
+}
+
+export class MonkeyReturnValue implements MonkeyObject {
+  value: MonkeyObject;
+  constructor(value: MonkeyObject) {
+    this.value = value;
+  }
+
+  getType() {
+    return MonkeyValue.ReturnValueObj;
+  }
+
+  inspect() {
+    return this.value.inspect();
+  }
+}
+
+export class MonkeyError implements MonkeyObject {
+  message: string;
+  constructor(message: string) {
+    this.message = message;
+  }
+
+  getType() {
+    return MonkeyValue.ErrorObj;
+  }
+
+  inspect() {
+    return `ERROR: ${this.message}`;
   }
 }
