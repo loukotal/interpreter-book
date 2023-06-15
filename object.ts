@@ -1,3 +1,6 @@
+import { Identifier, BlockStatement } from "./ast";
+import { MonkeyEnvironment } from "./environment";
+
 export interface MonkeyObject {
   getType: () => MonkeyValue;
   inspect: () => string;
@@ -9,6 +12,7 @@ export enum MonkeyValue {
   NullObj = "NULL",
   ReturnValueObj = "RETURN_VALUE",
   ErrorObj = "ERROR",
+  FunctionObj = "FUNCTION_OBJ",
 }
 
 export class MonkeyInteger implements MonkeyObject {
@@ -78,5 +82,30 @@ export class MonkeyError implements MonkeyObject {
 
   inspect() {
     return `ERROR: ${this.message}`;
+  }
+}
+
+export class MonkeyFunction implements MonkeyObject {
+  parameters: Identifier[];
+  body: BlockStatement;
+  env: MonkeyEnvironment;
+  constructor(
+    parameters: Identifier[],
+    body: BlockStatement,
+    env: MonkeyEnvironment
+  ) {
+    this.parameters = parameters;
+    this.body = body;
+    this.env = env;
+  }
+
+  getType() {
+    return MonkeyValue.FunctionObj;
+  }
+
+  inspect() {
+    return `fn(${this.parameters
+      .map((p) => p.toString())
+      .join(", ")}) {\n${this.body.toString()}\n}`;
   }
 }
